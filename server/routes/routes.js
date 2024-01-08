@@ -4,17 +4,38 @@ const Task=require('../models/models')
 const router=express.Router()
 
 router.get('/',(req,res)=>{
-   const task=new Task({
-      todo : 'Make lunch',
-      isComplete : false
-   })
+ Task.find((err,docs)=>{
+   if(err) console.log(err);
+   res.json(docs)
+ })
+})
 
-   task.save((err,doc)=>{
+router.post('/',(req,res)=>{
+   const task=new Task(req.body)
+   task.save((err,docs)=>{
       if(err) console.log(err)
-      console.log(doc)
+      res.json(docs)
    })
+})
 
-}
-)
+router.put('/:id',(req,res)=>{
+   Task.findOneAndUpdate({
+      _id : req.params.id
+   },req.body,{
+      new:true
+   },(err,docs)=>{
+      if(err) console.log(err)
+      res.json(docs)
+   }
+   )
+})
+
+
+router.delete(':/id',(req,res)=>{
+   Task.findByIdAndDelete(req.params.id,(err,docs)=>{
+      if(err) console.log(err)
+      res.json(doc)
+   })
+})
 
 module.exports=router
